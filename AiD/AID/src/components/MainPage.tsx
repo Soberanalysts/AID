@@ -5,33 +5,14 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
   SafeAreaView,
   Dimensions,
 } from 'react-native';
 
+import { User, ContentCard, Article } from '../types';
+import { Colors, Typography, Spacing, BorderRadius } from '../constants/colors';
+
 const { width: screenWidth } = Dimensions.get('window');
-
-interface User {
-  id: string;
-  name: string;
-  avatar?: string;
-  subtitle?: string;
-}
-
-interface ContentCard {
-  id: string;
-  title: string;
-  subtitle?: string;
-  image?: string;
-  category?: string;
-  date?: string;
-  engagement?: {
-    likes: number;
-    comments: number;
-    shares: number;
-  };
-}
 
 const MainPage: React.FC = () => {
   // Sample data based on the Figma design
@@ -64,7 +45,7 @@ const MainPage: React.FC = () => {
     },
   ];
 
-  const articles = [
+  const articles: Article[] = [
     {
       id: '1',
       title: '2024/11월2일 12시30분 봄날 벚꽃 cccccc',
@@ -231,7 +212,7 @@ const MainPage: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
   },
   scrollView: {
     flex: 1,
@@ -242,11 +223,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#FFFFFF',
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.base,
+    backgroundColor: Colors.white,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: Colors.borderGray,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -255,15 +236,15 @@ const styles = StyleSheet.create({
   profileIcon: {
     width: 32,
     height: 32,
-    borderRadius: 16,
-    backgroundColor: '#121212',
+    borderRadius: BorderRadius.xl,
+    backgroundColor: Colors.gray8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   profileText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '500',
+    color: Colors.white,
+    fontSize: Typography.sizes.sm,
+    fontWeight: Typography.weights.medium,
   },
   headerRight: {
     flexDirection: 'row',
@@ -274,10 +255,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   notificationText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#2651E8',
-    marginRight: 8,
+    fontSize: Typography.sizes.lg,
+    fontWeight: Typography.weights.medium,
+    color: Colors.mainBlue5,
+    marginRight: Spacing.sm,
   },
   notificationBell: {
     width: 24,
@@ -297,8 +278,8 @@ const styles = StyleSheet.create({
   bannerPlaceholder: {
     width: '100%',
     height: 120,
-    backgroundColor: '#E5E5E5',
-    borderRadius: 8,
+    backgroundColor: Colors.mediumGray,
+    borderRadius: BorderRadius.base,
   },
 
   // Tab Styles
@@ -315,16 +296,16 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     borderBottomWidth: 2,
-    borderBottomColor: '#2651E8',
+    borderBottomColor: Colors.mainBlue5,
   },
   tabText: {
-    fontSize: 14,
-    color: '#666666',
-    fontWeight: '400',
+    fontSize: Typography.sizes.base,
+    color: Colors.textGray,
+    fontWeight: Typography.weights.regular,
   },
   activeTabText: {
-    color: '#2651E8',
-    fontWeight: '500',
+    color: Colors.mainBlue5,
+    fontWeight: Typography.weights.medium,
   },
 
   // Content Section Styles

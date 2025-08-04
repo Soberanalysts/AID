@@ -11,7 +11,15 @@
       "Bash(rm:*)",
       "Bash(mkdir:*)",
       "Bash(git reset:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "mcp__github__get_me",
+      "mcp__github__create_repository",
+      "mcp__github__search_repositories",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "mcp__filesystem__list_directory",
+      "mcp__filesystem__directory_tree",
+      "mcp__filesystem__move_file"
     ],
     "deny": []
   }
