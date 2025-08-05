@@ -5,10 +5,7 @@
 
 import React, { useState, useRef } from 'react';
 import { StatusBar, StyleSheet, useColorScheme, View, ScrollView, Dimensions } from 'react-native';
-import { MainPage } from './src';
-import OnboardingPage from './src/components/OnboardingPage';
-import OnboardingPage2 from './src/components/OnboardingPage2';
-import OnboardingPage3 from './src/components/OnboardingPage3';
+import { MainPage, OnboardingPage, OnboardingPage2, OnboardingPage3 } from './src/pages';
 
 const { width: screenWidth } = Dimensions.get('window');
 
