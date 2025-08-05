@@ -93,10 +93,22 @@ To integrate these components into your navigation structure:
 
 Example with React Navigation:
 ```tsx
-// In your navigation stack
-<Stack.Screen 
-  name="Alarms" 
-  component={AlarmExamplePage}
-  options={{ headerShown: false }}
-/>
+// In MainPage - integrated alarm navigation
+const MainPage = () => {
+  const [showAlarmPage, setShowAlarmPage] = useState(false);
+  
+  const handleBellPress = () => setShowAlarmPage(true);
+  const handleBackFromAlarmPage = () => setShowAlarmPage(false);
+  
+  if (showAlarmPage) {
+    return <AlarmPage onGoBack={handleBackFromAlarmPage} />;
+  }
+  
+  return (
+    // MainPage with bell button navigation
+    <TouchableOpacity onPress={handleBellPress}>
+      <Text>🔔</Text>
+    </TouchableOpacity>
+  );
+};
 ```
