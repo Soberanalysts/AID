@@ -12,7 +12,7 @@ import {
 import { User, ContentCard, Article, PointData } from '../types';
 import { Colors, Typography, Spacing, BorderRadius } from '../constants/colors';
 import PointPage from './PointPage';
-import { AlarmPage } from '../components';
+import AlarmPage from './AlarmPage';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -330,7 +330,7 @@ const MainPage: React.FC = () => {
   // Conditional rendering based on page states
   if (showAlarmPage) {
     return (
-      <AlarmPage onBack={handleBackFromAlarmPage} />
+      <AlarmPage onGoBack={handleBackFromAlarmPage} />
     );
   }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
-import { AlarmPage } from '../components';
+import AlarmPage from './AlarmPage';
 
 /**
  * Example page demonstrating the AlarmPage component usage

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { Colors, Typography, Spacing } from '../constants/colors';
 import { AlarmData } from '../types';
-import AlarmItem from './AlarmItem';
+import AlarmItem from '../components/AlarmItem';
 import { alarmDataService } from '../services/alarmDataService';
 
 interface AlarmPageProps {
