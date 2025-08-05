@@ -9,14 +9,16 @@ import {
   Dimensions,
 } from 'react-native';
 
-import { User, ContentCard, Article } from '../types';
+import { User, ContentCard, Article, PointData } from '../types';
 import { Colors, Typography, Spacing, BorderRadius } from '../constants/colors';
+import PointPage from './PointPage';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 const MainPage: React.FC = () => {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [activeBottomNavIndex, setActiveBottomNavIndex] = useState(0);
+  const [showPointPage, setShowPointPage] = useState(false);
 
   // Sample data based on the Figma design with proper Korean text
   const navigationTabs = ['전체', '호스팅', '커뮤니티', '건강/취미', '추천'];
@@ -80,6 +82,54 @@ const MainPage: React.FC = () => {
     { id: 'profile', label: '마이', icon: '👤' },
   ];
 
+  // Sample point data for PointPage
+  const pointData: PointData = {
+    availablePoints: 236272,
+    retailPoints: 0,
+    transactions: [
+      {
+        id: '1',
+        type: '출석체크',
+        description: '출석체크',
+        date: '2025.03.05',
+        amount: 10,
+        isEarned: true,
+      },
+      {
+        id: '2',
+        type: '데이터 가져',
+        description: '쇼핑 Day-D 지급 쇼핑 데이터 만들어가기!!!',
+        date: '2025.03.04',
+        amount: 200,
+        isEarned: true,
+      },
+      {
+        id: '3',
+        type: '만보기',
+        description: '만보기',
+        date: '2025.03.03',
+        amount: 200,
+        isEarned: true,
+      },
+      {
+        id: '4',
+        type: '구매',
+        description: '스타벅스 아이스아메리카노 T',
+        date: '2025.03.02',
+        amount: 4200,
+        isEarned: false,
+      },
+    ],
+  };
+
+  const handlePointNumberPress = () => {
+    setShowPointPage(true);
+  };
+
+  const handleBackFromPointPage = () => {
+    setShowPointPage(false);
+  };
+
   const renderHeader = () => (
     <View style={styles.header}>
       <View style={styles.headerLeft}>
@@ -89,7 +139,9 @@ const MainPage: React.FC = () => {
       </View>
       <View style={styles.headerRight}>
         <View style={styles.notificationContainer}>
-          <Text style={styles.notificationText}>236,272</Text>
+          <TouchableOpacity onPress={handlePointNumberPress} activeOpacity={0.7}>
+            <Text style={styles.notificationText}>236,272</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.notificationBell}>
             <Text style={styles.bellIcon}>🔔</Text>
             <View style={styles.notificationBadge}>
@@ -264,6 +316,16 @@ const MainPage: React.FC = () => {
       ))}
     </View>
   );
+
+  // Conditional rendering based on showPointPage state
+  if (showPointPage) {
+    return (
+      <PointPage 
+        onBack={handleBackFromPointPage}
+        pointData={pointData}
+      />
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>

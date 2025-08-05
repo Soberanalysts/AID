@@ -45,3 +45,19 @@ export interface BottomNavItem {
   icon?: string;
   isActive?: boolean;
 }
+
+// Point-related interfaces
+export interface PointTransaction {
+  id: string;
+  type: string;
+  description: string;
+  date: string;
+  amount: number;
+  isEarned: boolean; // true for earned (+), false for spent (-)
+}
+
+export interface PointData {
+  availablePoints: number;
+  retailPoints: number;
+  transactions: PointTransaction[];
+}
