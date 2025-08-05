@@ -12,6 +12,7 @@ import {
 import { User, ContentCard, Article, PointData } from '../types';
 import { Colors, Typography, Spacing, BorderRadius } from '../constants/colors';
 import PointPage from './PointPage';
+import { AlarmPage } from '../components';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -19,6 +20,7 @@ const MainPage: React.FC = () => {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [activeBottomNavIndex, setActiveBottomNavIndex] = useState(0);
   const [showPointPage, setShowPointPage] = useState(false);
+  const [showAlarmPage, setShowAlarmPage] = useState(false);
 
   // Sample data based on the Figma design with proper Korean text
   const navigationTabs = ['전체', '호스팅', '커뮤니티', '건강/취미', '추천'];
@@ -130,6 +132,14 @@ const MainPage: React.FC = () => {
     setShowPointPage(false);
   };
 
+  const handleBellPress = () => {
+    setShowAlarmPage(true);
+  };
+
+  const handleBackFromAlarmPage = () => {
+    setShowAlarmPage(false);
+  };
+
   const renderHeader = () => (
     <View style={styles.header}>
       <View style={styles.headerLeft}>
@@ -142,7 +152,7 @@ const MainPage: React.FC = () => {
           <TouchableOpacity onPress={handlePointNumberPress} activeOpacity={0.7}>
             <Text style={styles.notificationText}>236,272</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.notificationBell}>
+          <TouchableOpacity style={styles.notificationBell} onPress={handleBellPress} activeOpacity={0.7}>
             <Text style={styles.bellIcon}>🔔</Text>
             <View style={styles.notificationBadge}>
               <Text style={styles.badgeText}>5</Text>
@@ -317,7 +327,13 @@ const MainPage: React.FC = () => {
     </View>
   );
 
-  // Conditional rendering based on showPointPage state
+  // Conditional rendering based on page states
+  if (showAlarmPage) {
+    return (
+      <AlarmPage onBack={handleBackFromAlarmPage} />
+    );
+  }
+
   if (showPointPage) {
     return (
       <PointPage 
