@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  Animated,
 } from 'react-native';
 
 import { Colors, Typography, Spacing, BorderRadius } from '../constants/colors';
@@ -26,6 +27,13 @@ const PointPage: React.FC<PointPageProps> = ({
   onBack, 
   pointData = getComprehensivePointData() 
 }) => {
+  // Pagination state
+  const [visibleItemsCount, setVisibleItemsCount] = useState(10);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Animation value for new items
+  const fadeAnim = React.useRef(new Animated.Value(1)).current;
+
   // Format number with commas
   const formatNumber = (num: number): string => {
     return num.toLocaleString('ko-KR');
@@ -36,6 +44,41 @@ const PointPage: React.FC<PointPageProps> = ({
     const sign = isEarned ? '+' : '-';
     return `${sign}${formatNumber(amount)}P`;
   };
+
+  // Handle load more functionality
+  const handleLoadMore = () => {
+    if (isLoading || visibleItemsCount >= pointData.transactions.length) {
+      return;
+    }
+
+    setIsLoading(true);
+    
+    // Simulate loading delay for better UX
+    setTimeout(() => {
+      // Fade out animation
+      Animated.timing(fadeAnim, {
+        toValue: 0.3,
+        duration: 150,
+        useNativeDriver: false,
+      }).start(() => {
+        // Update visible items count
+        setVisibleItemsCount(prev => Math.min(prev + 10, pointData.transactions.length));
+        
+        // Fade in animation
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: false,
+        }).start(() => {
+          setIsLoading(false);
+        });
+      });
+    }, 300);
+  };
+
+  // Get visible transactions
+  const visibleTransactions = pointData.transactions.slice(0, visibleItemsCount);
+  const hasMoreItems = visibleItemsCount < pointData.transactions.length;
 
   const renderHeader = () => (
     <View style={styles.header}>
@@ -75,29 +118,45 @@ const PointPage: React.FC<PointPageProps> = ({
     <View style={styles.historySection}>
       <Text style={styles.historySectionTitle}>포인트 내역</Text>
       
-      {pointData.transactions.map((transaction) => (
-        <View key={transaction.id} style={styles.transactionItem}>
-          <View style={styles.transactionInfo}>
-            <Text style={styles.transactionType}>{transaction.type}</Text>
-            <View style={styles.transactionMeta}>
-              <Text style={styles.transactionDescription} numberOfLines={1}>
-                {transaction.description}
-              </Text>
-              <Text style={styles.transactionDate}>{transaction.date}</Text>
+      <Animated.View style={{ opacity: fadeAnim }}>
+        {visibleTransactions.map((transaction) => (
+          <View key={transaction.id} style={styles.transactionItem}>
+            <View style={styles.transactionInfo}>
+              <Text style={styles.transactionType}>{transaction.type}</Text>
+              <View style={styles.transactionMeta}>
+                <Text style={styles.transactionDescription} numberOfLines={1}>
+                  {transaction.description}
+                </Text>
+                <Text style={styles.transactionDate}>{transaction.date}</Text>
+              </View>
             </View>
+            <Text style={[
+              styles.transactionAmount,
+              transaction.isEarned ? styles.earnedAmount : styles.spentAmount
+            ]}>
+              {getFormattedAmount(transaction.amount, transaction.isEarned)}
+            </Text>
           </View>
-          <Text style={[
-            styles.transactionAmount,
-            transaction.isEarned ? styles.earnedAmount : styles.spentAmount
-          ]}>
-            {getFormattedAmount(transaction.amount, transaction.isEarned)}
-          </Text>
-        </View>
-      ))}
+        ))}
+      </Animated.View>
 
-      <TouchableOpacity style={styles.moreButton}>
-        <Text style={styles.moreButtonText}>더보기</Text>
-      </TouchableOpacity>
+      {hasMoreItems && (
+        <TouchableOpacity 
+          style={[
+            styles.moreButton,
+            isLoading && styles.moreButtonDisabled
+          ]} 
+          onPress={handleLoadMore}
+          disabled={isLoading}
+        >
+          <Text style={[
+            styles.moreButtonText,
+            isLoading && styles.moreButtonTextDisabled
+          ]}>
+            {isLoading ? '로딩 중...' : '더보기'}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 
@@ -286,11 +345,17 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.lg,
     marginTop: Spacing.base,
   },
+  moreButtonDisabled: {
+    opacity: 0.6,
+  },
   moreButtonText: {
     fontSize: Typography.sizes.base,
     color: Colors.mainBlue5,
     fontWeight: Typography.weights.medium,
     fontFamily: Typography.fontFamily,
+  },
+  moreButtonTextDisabled: {
+    color: Colors.textGray,
   },
 });
 
