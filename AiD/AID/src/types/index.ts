@@ -61,3 +61,17 @@ export interface PointData {
   retailPoints: number;
   transactions: PointTransaction[];
 }
+
+// Alarm/Notification interfaces
+export type NotificationType = 'point' | 'update' | 'system' | 'health' | 'event' | 'general';
+
+export interface AlarmData {
+  id: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  time: string;
+  isToday?: boolean;
+  timestamp?: Date;
+  isRead?: boolean;
+}

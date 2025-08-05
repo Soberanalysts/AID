@@ -2,3 +2,6 @@
 
 export * from './pointDataService';
 export { default as pointDataService } from './pointDataService';
+
+export * from './alarmDataService';
+export { alarmDataService } from './alarmDataService';
