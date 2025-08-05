@@ -3,46 +3,76 @@
  * @format
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { StatusBar, StyleSheet, useColorScheme, View, ScrollView, Dimensions } from 'react-native';
 import { MainPage } from './src';
 import OnboardingPage from './src/components/OnboardingPage';
+import OnboardingPage2 from './src/components/OnboardingPage2';
+import OnboardingPage3 from './src/components/OnboardingPage3';
+
+const { width: screenWidth } = Dimensions.get('window');
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
   const [showOnboarding, setShowOnboarding] = useState(true);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    // Set up 3-second timer to automatically navigate to MainPage
-    timerRef.current = setTimeout(() => {
-      setShowOnboarding(false);
-    }, 3000);
-
-    // Cleanup timer on component unmount
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
+  const [currentPage, setCurrentPage] = useState(0); // 0, 1, 2 for the three onboarding pages
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const handleSkip = () => {
-    // Clear the timer and immediately navigate to MainPage
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
+    // Skip to MainPage from any onboarding page
     setShowOnboarding(false);
   };
+
+  const handleConfirm = () => {
+    // Complete onboarding and go to MainPage
+    setShowOnboarding(false);
+  };
+
+  const handleScroll = (event: any) => {
+    const contentOffsetX = event.nativeEvent.contentOffset.x;
+    const pageIndex = Math.round(contentOffsetX / screenWidth);
+    setCurrentPage(pageIndex);
+  };
+
+  const renderOnboardingFlow = () => (
+    <ScrollView
+      ref={scrollViewRef}
+      horizontal
+      pagingEnabled
+      showsHorizontalScrollIndicator={false}
+      onMomentumScrollEnd={handleScroll}
+      scrollEventThrottle={16}
+      style={styles.scrollView}
+    >
+      <View style={styles.pageContainer}>
+        <OnboardingPage 
+          onSkip={handleSkip}
+          currentStep={currentPage + 1}
+          totalSteps={3}
+        />
+      </View>
+      <View style={styles.pageContainer}>
+        <OnboardingPage2 
+          onSkip={handleSkip}
+          currentStep={currentPage + 1}
+          totalSteps={3}
+        />
+      </View>
+      <View style={styles.pageContainer}>
+        <OnboardingPage3 
+          onSkip={handleSkip}
+          onConfirm={handleConfirm}
+          currentStep={currentPage + 1}
+          totalSteps={3}
+        />
+      </View>
+    </ScrollView>
+  );
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      {showOnboarding ? (
-        <OnboardingPage onSkip={handleSkip} />
-      ) : (
-        <MainPage />
-      )}
+      {showOnboarding ? renderOnboardingFlow() : <MainPage />}
     </View>
   );
 }
@@ -50,6 +80,12 @@ function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  pageContainer: {
+    width: screenWidth,
   },
 });
 
