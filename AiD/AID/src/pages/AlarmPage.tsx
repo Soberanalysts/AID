@@ -35,11 +35,8 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ onGoBack, onDeleteAll }) => {
     setUnreadCount(alarmDataService.getUnreadCount());
   };
 
-  const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
 
   const handleDeleteItem = (id: string) => {
-    setDeletingItemId(id);
-    
     // Delete from service
     const success = alarmDataService.deleteNotification(id);
     
@@ -48,9 +45,6 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ onGoBack, onDeleteAll }) => {
       loadAlarmData();
     }
     
-    setTimeout(() => {
-      setDeletingItemId(null);
-    }, 300);
   };
 
   const handleDeleteAll = () => {
@@ -89,14 +83,6 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ onGoBack, onDeleteAll }) => {
     }
   };
 
-  const renderAlarmItem = (item: AlarmData, showDelete: boolean = false) => (
-    <AlarmItem
-      key={item.id}
-      data={item}
-      onDelete={handleDeleteItem}
-      showDeleteAction={showDelete && deletingItemId === item.id}
-    />
-  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -134,15 +120,13 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ onGoBack, onDeleteAll }) => {
           {todayAlarms.length > 0 && (
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>오늘알림</Text>
-              {todayAlarms.map((item, index) => (
-                <TouchableOpacity
+              {todayAlarms.map((item) => (
+                <AlarmItem
                   key={item.id}
+                  data={item}
                   onPress={() => handleItemPress(item)}
-                  onLongPress={() => setDeletingItemId(item.id)}
-                  activeOpacity={0.95}
-                >
-                  {renderAlarmItem(item, true)}
-                </TouchableOpacity>
+                  onDelete={handleDeleteItem}
+                />
               ))}
             </View>
           )}
@@ -152,13 +136,12 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ onGoBack, onDeleteAll }) => {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>지난알림</Text>
               {pastAlarms.map((item) => (
-                <TouchableOpacity
+                <AlarmItem
                   key={item.id}
+                  data={item}
                   onPress={() => handleItemPress(item)}
-                  activeOpacity={0.95}
-                >
-                  {renderAlarmItem(item, false)}
-                </TouchableOpacity>
+                  onDelete={handleDeleteItem}
+                />
               ))}
             </View>
           )}

@@ -1,19 +1,30 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { Colors, Typography, Spacing, BorderRadius } from '../constants/colors';
 import { AlarmData } from '../types';
 
 interface AlarmItemProps {
   data: AlarmData;
   onDelete?: (id: string) => void;
-  showDeleteAction?: boolean;
+  onPress?: (id: string) => void;
 }
 
 const AlarmItem: React.FC<AlarmItemProps> = ({ 
   data, 
   onDelete, 
-  showDeleteAction = false 
+  onPress 
 }) => {
+  const [showDeleteButton, setShowDeleteButton] = useState(false);
+
+  const handleItemPress = () => {
+    setShowDeleteButton(!showDeleteButton);
+    onPress?.(data.id);
+  };
+
+  const handleDelete = () => {
+    onDelete?.(data.id);
+    setShowDeleteButton(false);
+  };
   const getIconContent = () => {
     switch (data.type) {
       case 'point':
@@ -57,15 +68,14 @@ const AlarmItem: React.FC<AlarmItemProps> = ({
     }
   };
 
-  const handleDelete = () => {
-    if (onDelete) {
-      onDelete(data.id);
-    }
-  };
 
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
+      <TouchableOpacity 
+        style={styles.content} 
+        onPress={handleItemPress}
+        activeOpacity={0.7}
+      >
         <View style={styles.iconContainer}>
           {getIconContent()}
         </View>
@@ -77,9 +87,9 @@ const AlarmItem: React.FC<AlarmItemProps> = ({
           </View>
           <Text style={styles.message}>{data.message}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
 
-      {showDeleteAction && (
+      {showDeleteButton && (
         <TouchableOpacity 
           style={styles.deleteButton}
           onPress={handleDelete}
